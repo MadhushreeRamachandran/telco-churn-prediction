@@ -1,0 +1,66 @@
+project:
+  name: telco-churn-prediction
+  random_state: 42
+
+data:
+  raw_path: data/raw/customer_churn_dataset-testing-master.csv
+  processed_path: data/processed/churn_processed.csv
+  target_column: Churn
+  id_columns:
+    - CustomerID
+
+features:
+  numeric:
+    - Age
+    - Tenure
+    - Usage Frequency
+    - Support Calls
+    - Payment Delay
+    - Total Spend
+    - Last Interaction
+
+  categorical:
+    - Gender
+    - Subscription Type
+    - Contract Length
+
+  derived:
+    - tenure_months
+    - support_call_rate
+    - payment_delay_rate
+    - usage_per_tenure
+    - spend_per_tenure
+
+model:
+  name: xgboost
+  test_size: 0.2
+  validation_size: 0.2
+
+  hyperparameters:
+    n_estimators:
+      - 100
+      - 200
+      - 300
+    max_depth:
+      - 3
+      - 5
+      - 7
+    learning_rate:
+      - 0.01
+      - 0.05
+      - 0.1
+    subsample:
+      - 0.8
+      - 1.0
+    colsample_bytree:
+      - 0.8
+      - 1.0
+
+training:
+  cv_folds: 5
+  scoring: roc_auc
+  n_iter: 10
+
+artifacts:
+  model_path: models/artifacts/churn_pipeline.joblib
+  metrics_path: models/artifacts/metrics.json
